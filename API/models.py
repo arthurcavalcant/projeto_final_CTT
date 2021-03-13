@@ -41,7 +41,8 @@ class Cliente(db.Model):
     id_pessoa: int
 
     id_cliente = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
-    id_pessoa = db.Column(db.INTEGER, db.ForeignKey('pessoa.id_pessoa', ondelete='CASCADE'), nullable=False, unique=True)
+    id_pessoa = db.Column(db.INTEGER, db.ForeignKey('pessoa.id_pessoa', ondelete='CASCADE'), nullable=False,
+                          unique=True)
 
 
 class Vendedor(db.Model):

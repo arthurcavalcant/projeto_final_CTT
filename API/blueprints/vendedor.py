@@ -41,7 +41,14 @@ class VendedorCollection(Resource):
     def post(self):
         data = name_space.payload
         try:
-            if Pessoa.query.filter_by(cpf=data["cpf"]).first() is None \
+            id_pessoa_cpf = Pessoa.query.filter_by(cpf=data["cpf"]).first()
+            id_pessoa_rg = Pessoa.query.filter_by(cpf=data["rg"]).first()
+            if (id_pessoa_cpf and id_pessoa_rg):
+                if Vendedor.query.filter_by(id_pessoa=id_pessoa_cpf) is not None or Vendedor.query.filter_by(
+                        id_pessoa=id_pessoa_rg) is not None:
+                    name_space.abort(400, status="CPF ou RG já cadastrado(s)", statusCode="400")
+
+            elif Pessoa.query.filter_by(cpf=data["cpf"]).first() is None \
                     and Pessoa.query.filter_by(rg=data["rg"]).first() is None:
                 pessoa = Pessoa(**data)
                 db.session.add(pessoa)
@@ -50,10 +57,6 @@ class VendedorCollection(Resource):
                 db.session.add(vendedor)
                 db.session.commit()
                 return jsonify(pessoa)
-            elif Vendedor.query.filter_by(id_pessoa=Pessoa.query.filter_by(
-                    cpf=data["cpf"]).first().id_pessoa) is not None or Vendedor.query.filter_by(
-                id_pessoa=Pessoa.query.filter_by(rg=data["rg"]).first().id_pessoa) is not None:
-                name_space.abort(400, status="CPF ou RG já cadastrado(s)", statusCode="400")
 
             elif Pessoa.query.filter_by(cpf=data["cpf"]).first() == Pessoa.query.filter_by(rg=data["rg"]).first():
                 pessoa = Pessoa.query.filter_by(cpf=data["cpf"]).first()

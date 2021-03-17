@@ -5,8 +5,8 @@ from flask_restplus import Api, Resource, fields
 
 from API.models import Cliente, Proprietario, Vendedor, Imovel, db, Compra, Financiamento, Banco
 
-compra_blueprint = Blueprint('compra_bp', __name__, url_prefix='/ns5')
-api = Api(compra_blueprint, doc='/api/docs/compra',
+compra_blueprint = Blueprint('compra_bp', __name__, url_prefix='api/ns5')
+api = Api(compra_blueprint, doc='/docs/compra',
           version="1.0",
           title="Compra Admin",
           description="Gerencia os dados referentes às compras")
@@ -48,9 +48,9 @@ class CompraCollection(Resource):
     def post(self):
         data = name_space.payload
         try:
-            if Proprietario.query.filter_by(id_proprietario=data["id_proprietario"]).first() is None or \
-                    Cliente.query.filter_by(id_cliente=data["id_cliente"]).first() is None or \
-                    Vendedor.query.filter_by(id_vendedor=data["id_vendedor"]).first() is None or \
+            if Proprietario.query.filter_by(id_pessoa=data["id_proprietario"]).first() is None or \
+                    Cliente.query.filter_by(id_pessoa=data["id_cliente"]).first() is None or \
+                    Vendedor.query.filter_by(id_pessoa=data["id_vendedor"]).first() is None or \
                     Imovel.query.filter_by(id_imovel=data["id_imovel"]).first() is None:
                 return Response(status=404)
             else:
@@ -58,7 +58,7 @@ class CompraCollection(Resource):
                 db.session.add(compra)
                 db.session.commit()
 
-                cliente = Cliente.query.filter_by(id_cliente=data["id_cliente"]).first()
+                cliente = Cliente.query.filter_by(id_pessoa=data["id_cliente"]).first()
                 novo_proprietario = Proprietario(id_pessoa=cliente.id_pessoa)
                 db.session.add(novo_proprietario)
                 db.session.commit()

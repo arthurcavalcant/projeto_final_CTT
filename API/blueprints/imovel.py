@@ -38,7 +38,7 @@ imovel_dto = api.model('ImovelDTO', {
 
 
 @name_space.route('/', methods=['POST', 'GET'])
-class ImovelColection(Resource):
+class ImovelCollection(Resource):
     @name_space.expect(imovel_fields, validate=True)
     @name_space.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error', 404: 'Not Found'})
     def post(self):

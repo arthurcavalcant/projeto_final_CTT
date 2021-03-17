@@ -116,7 +116,8 @@ class VendedorEntity(Resource):
     def delete(self, id):
         vendedor = Vendedor.query.filter_by(id_pessoa=id).first()
         if vendedor:
-            db.session.delete(vendedor)
+            pessoa = Pessoa.query.filter_by(id_pessoa=id).first()
+            db.session.delete(pessoa)
             db.session.commit()
             return Response(status=200)
         return Response(status=404)

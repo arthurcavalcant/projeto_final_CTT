@@ -115,7 +115,8 @@ class ProprietarioEntity(Resource):
     def delete(self, id):
         proprietario = Proprietario.query.filter_by(id_pessoa=id).first()
         if proprietario:
-            db.session.delete(proprietario)
+            pessoa = Pessoa.query.filter_by(id_pessoa=id).first()
+            db.session.delete(pessoa)
             db.session.commit()
             return Response(status=200)
         return Response(status=404)

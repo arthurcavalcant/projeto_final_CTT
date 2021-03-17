@@ -117,7 +117,8 @@ class ClienteEntity(Resource):
     def delete(self, id):
         cliente = Cliente.query.filter_by(id_pessoa=id).first()
         if cliente:
-            db.session.delete(cliente)
+            pessoa = Pessoa.query.filter_by(id_pessoa=id).first()
+            db.session.delete(pessoa)
             db.session.commit()
             return Response(status=200)
         return Response(status=404)

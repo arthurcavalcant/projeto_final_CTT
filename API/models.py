@@ -110,7 +110,7 @@ class Venda(db.Model):
                                 nullable=False)
     id_cliente = db.Column(db.INTEGER, db.ForeignKey('cliente.id_cliente', ondelete='CASCADE', onupdate='CASCADE'),
                            nullable=False)
-    id_vendedor = db.Column(db.INTEGER, db.ForeignKey('vendedor.id_pvendedor', ondelete='CASCADE', onupdate='CASCADE'),
+    id_vendedor = db.Column(db.INTEGER, db.ForeignKey('vendedor.id_vendedor', ondelete='CASCADE', onupdate='CASCADE'),
                             nullable=False)
     valor = db.Column(db.NUMERIC, nullable=False)
     tipo_compra = db.Column(db.Enum('à vista', 'financiamento', name='tipo_compra'), nullable=False)

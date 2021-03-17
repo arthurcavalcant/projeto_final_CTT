@@ -5,7 +5,7 @@ from flask_restplus import Api, Resource, fields
 
 from API.models import Cliente, Proprietario, Vendedor, Imovel, db, Compra, Financiamento, Banco
 
-compra_blueprint = Blueprint('compra_bp', __name__, url_prefix='api/ns5')
+compra_blueprint = Blueprint('compra_bp', __name__, url_prefix='/api/ns5')
 api = Api(compra_blueprint, doc='/docs/compra',
           version="1.0",
           title="Compra Admin",

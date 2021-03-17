@@ -3,7 +3,7 @@ from flask_restplus import Api, Resource, fields
 
 from API.models import db, Banco
 
-banco_blueprint = Blueprint('banco_bp', __name__, url_prefix="api/ns6")
+banco_blueprint = Blueprint('banco_bp', __name__, url_prefix="/api/ns6")
 api = Api(banco_blueprint, doc='/docs/banco',
           version="1.0",
           title="Banco Admin",

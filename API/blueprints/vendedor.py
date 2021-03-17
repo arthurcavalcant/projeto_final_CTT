@@ -3,7 +3,7 @@ from flask_restplus import Api, Resource, fields
 
 from API.models import Vendedor, Pessoa, db
 
-vendedor_blueprint = Blueprint('vendedor_bp', __name__, url_prefix="api/ns3")
+vendedor_blueprint = Blueprint('vendedor_bp', __name__, url_prefix="/api/ns3")
 api = Api(vendedor_blueprint, doc='/docs/vendedor', version="1.0",
           title="Vendedor Admin",
           description="Gerencia os dados referentes aos vendedores")

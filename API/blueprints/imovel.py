@@ -3,7 +3,7 @@ from flask_restplus import Api, Resource, fields
 
 from API.models import Proprietario, Imovel, db
 
-imovel_blueprint = Blueprint('imovel_bp', __name__, url_prefix="api/ns4")
+imovel_blueprint = Blueprint('imovel_bp', __name__, url_prefix="/api/ns4")
 api = Api(imovel_blueprint, doc='/docs/imovel',
           version="1.0",
           title="Imovel Admin",

@@ -93,7 +93,7 @@ class Banco(db.Model):
     nome = db.Column(db.VARCHAR(255), nullable=False)
 
 
-class Compra(db.Model):
+class Venda(db.Model):
     id_compra: int
     id_imovel: int
     id_proprietario: int

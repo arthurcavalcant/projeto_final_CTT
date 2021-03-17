@@ -4,7 +4,7 @@ from flask_cors import CORS
 from API.blueprints import banco
 from models import db
 from configparser import ConfigParser
-from blueprints import cliente, compra, proprietario, vendedor, imovel
+from blueprints import cliente, venda, proprietario, vendedor, imovel
 
 app = Flask(__name__)
 
@@ -23,7 +23,7 @@ app.register_blueprint(cliente.cliente_blueprint)
 app.register_blueprint(proprietario.proprietario_blueprint)
 app.register_blueprint(imovel.imovel_blueprint)
 app.register_blueprint(vendedor.vendedor_blueprint)
-app.register_blueprint(compra.compra_blueprint)
+app.register_blueprint(venda.venda_blueprint)
 app.register_blueprint(banco.banco_blueprint)
 
 

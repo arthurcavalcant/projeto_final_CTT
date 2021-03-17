@@ -3,17 +3,17 @@ import datetime
 from flask import Blueprint, jsonify, Response
 from flask_restplus import Api, Resource, fields
 
-from API.models import Cliente, Proprietario, Vendedor, Imovel, db, Compra, Financiamento, Banco
+from API.models import Cliente, Proprietario, Vendedor, Imovel, db, Venda, Financiamento, Banco
 
-compra_blueprint = Blueprint('compra_bp', __name__, url_prefix='/api/ns5')
-api = Api(compra_blueprint, doc='/docs/compra',
+venda_blueprint = Blueprint('venda_bp', __name__, url_prefix='/api/ns5')
+api = Api(venda_blueprint, doc='/docs/venda',
           version="1.0",
-          title="Compra Admin",
-          description="Gerencia os dados referentes às compras")
+          title="Venda Admin",
+          description="Gerencia os dados referentes às vendas")
 
-name_space = api.namespace("compra", descrption="Compras API")
+name_space = api.namespace("venda", descrption="Compras API")
 
-imovel_fields = api.model('Compra', {
+venda_fields = api.model('Venda', {
     "id_imovel": fields.Integer(required=True, description="ID do imóvel",
                                 help="Imóvel deve ter sido previamente cadastrado."),
     "id_proprietario": fields.Integer(required=True, description="ID do proprietário",
@@ -43,7 +43,7 @@ financiamento_fields = api.model('Finaciamento', {
 
 @name_space.route('/', methods=['POST', 'GET'])
 class CompraCollection(Resource):
-    @name_space.expect(imovel_fields, validate=True)
+    @name_space.expect(venda_fields, validate=True)
     @name_space.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error', 404: 'Not Found'})
     def post(self):
         data = name_space.payload
@@ -54,7 +54,7 @@ class CompraCollection(Resource):
                     Imovel.query.filter_by(id_imovel=data["id_imovel"]).first() is None:
                 return Response(status=404)
             else:
-                compra = Compra(**data)
+                compra = Venda(**data)
                 db.session.add(compra)
                 db.session.commit()
 
@@ -77,7 +77,7 @@ class CompraCollection(Resource):
 
     @name_space.doc(responses={200: 'OK'})
     def get(self):
-        compras = Compra.query.order_by(Compra.id_compra).all()
+        compras = Venda.query.order_by(Venda.id_compra).all()
 
         return jsonify([compras])
 
@@ -87,14 +87,14 @@ class CompraEntity(Resource):
     @name_space.doc(responses={200: 'OK', 404: 'Not Found'})
     def get(self, id):
         """Returns list of blog categories."""
-        compra = Compra.query.filter_by(id_compra=id).first()
+        compra = Venda.query.filter_by(id_compra=id).first()
         if compra:
             return jsonify(compra)
         return Response(status=404)
 
     @name_space.doc(responses={200: 'OK', 404: 'Not Found'})
     def delete(self, id):
-        compra = Compra.query.filter_by(id_compra=id).first()
+        compra = Venda.query.filter_by(id_compra=id).first()
         if compra:
             db.session.delete(compra)
             db.session.commit()
@@ -109,7 +109,7 @@ class CompraFinanciamentoCollection(Resource):
     def post(self):
         data = name_space.payload
         try:
-            compra = Compra.query.filter_by(id_compra=data.get("id_compra")).first()
+            compra = Venda.query.filter_by(id_compra=data.get("id_compra")).first()
             banco = Banco.query.filter_by(id_banco=data.get("id_banco")).first()
             if compra is not None and banco is not None:
                 if compra.tipo_compra == "à vista":

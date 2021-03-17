@@ -1,13 +1,14 @@
-from flask import Blueprint, flash, jsonify, Response
-import datetime
-
-from API.models import Cliente, Pessoa, db
+from flask import Blueprint, jsonify, Response
 from flask_restplus import Api, Resource, fields
 
-cliente_blueprint = Blueprint('cliente_bp', __name__, url_prefix="/ns1")
-api = Api(cliente_blueprint, doc='/api/docs/cliente')
+from API.models import Cliente, Pessoa, db
 
-name_space = api.namespace("cliente", descrption="Clientes API documentation")
+cliente_blueprint = Blueprint('cliente_bp', __name__, url_prefix="/api/ns1")
+api = Api(cliente_blueprint, doc='/docs/cliente', version="1.0",
+          title="Cliente Admin",
+          description="Gerencia os dados referentes aos clientes")
+
+name_space = api.namespace("cliente", description="Cliente API")
 
 cliente_fields = api.model('Cliente', {
     'nome': fields.String(required=True, description="Nome de uma pessoa", help="Nome não pode ficar em branco."),
@@ -33,7 +34,7 @@ cliente_dto = api.model('ClienteDTO', {
 
 
 @name_space.route('/', methods=['POST', 'GET'])
-class CLienteColection(Resource):
+class ClienteCollection(Resource):
     @name_space.expect(cliente_fields, validate=True)
     @name_space.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error'})
     def post(self):
@@ -47,20 +48,26 @@ class CLienteColection(Resource):
                 cliente = Cliente(id_pessoa=pessoa.id_pessoa)
                 db.session.add(cliente)
                 db.session.commit()
-                return jsonify([pessoa])
-            elif Pessoa.query.filter_by(cpf=data["cpf"]).first() == Pessoa.query.filter_by(rg=data["rg"]).first():
+                return jsonify(pessoa)
+            elif Cliente.query.filter_by(id_pessoa=Pessoa.query.filter_by(
+                    cpf=data["cpf"]).first().id_pessoa) is not None or Cliente.query.filter_by(
+                id_pessoa=Pessoa.query.filter_by(rg=data["rg"]).first().id_pessoa) is not None:
+                name_space.abort(400, status="CPF ou RG já cadastrado(s)", statusCode="400")
+
+            elif Pessoa.query.filter_by(cpf=data["cpf"]).first() == Pessoa.query.filter_by(
+                    rg=data["rg"]).first():
                 pessoa = Pessoa.query.filter_by(cpf=data["cpf"]).first()
                 cliente = Cliente(id_pessoa=pessoa.id_pessoa)
                 db.session.add(cliente)
                 db.session.commit()
-                return jsonify([pessoa])
+                return jsonify(pessoa)
             else:
                 return Response(status=400)
 
         except KeyError as e:
-            name_space.abort(500, e.__doc__, status="Could not retrieve information", statusCode="500")
+            name_space.abort(500, e.__doc__, status="Could not save information", statusCode="500")
         except Exception as e:
-            name_space.abort(400, e.__doc__, status="Could not retrieve information", statusCode="400")
+            name_space.abort(400, e.__doc__, status="Could not save information", statusCode="400")
 
     @name_space.doc(responses={200: 'OK'})
     def get(self):
@@ -73,22 +80,23 @@ class CLienteColection(Resource):
         return jsonify(pessoas)
 
 
-@name_space.route('/<int:id>', methods=['POST', 'GET', 'PUT'])
+@name_space.route('/<int:id>', methods=['PUT', 'GET', 'DELETE'])
 class ClienteEntity(Resource):
     @name_space.expect(cliente_dto, validate=True)
     @name_space.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error', 404: "Not Found"})
-    def post(self, id):
+    def put(self, id):
         data = name_space.payload
         try:
             if Cliente.query.filter_by(id_pessoa=id).first() is not None:
-                pessoa = Pessoa.query.filter_by(id_pessoa=id).first()
+                pessoa = Pessoa.query.get_or_404(id)
                 print("a")
-                if data.get("nome") is not None and data.get("nome") != "string":
+                if data.get("nome") is not None:
                     pessoa.nome = data["nome"]
-                if data.get("estado_civil_pessoa") is not None and data.get("estado_civil_pessoa") != "string":
-                    pessoa.data_nascimento = data["estado_civil_pessoa"]
-                if data.get("profissao") is not None and data.get("profissao") != "string":
+                if data.get("estado_civil_pessoa") is not None:
+                    pessoa.estado_civil_pessoa = data["estado_civil_pessoa"]
+                if data.get("profissao") is not None:
                     pessoa.profissao = data["profissao"]
+                db.session.add(pessoa)
                 db.session.commit()
                 return jsonify([pessoa])
             return Response(status=404)
@@ -100,14 +108,14 @@ class ClienteEntity(Resource):
 
     @name_space.doc(responses={200: 'OK', 404: 'Not Found'})
     def get(self, id):
-            cliente = Cliente.query.filter_by(id_pessoa=id).first()
-            if cliente:
-                pessoa = Pessoa.query.filter_by(id_pessoa=id).first()
-                return jsonify(pessoa)
-            return Response(status=404)
+        cliente = Cliente.query.filter_by(id_pessoa=id).first()
+        if cliente:
+            pessoa = Pessoa.query.filter_by(id_pessoa=id).first()
+            return jsonify(pessoa)
+        return Response(status=404)
 
     @name_space.doc(responses={200: 'OK', 404: 'Not Found'})
-    def put(self, id):
+    def delete(self, id):
         cliente = Cliente.query.filter_by(id_pessoa=id).first()
         if cliente:
             db.session.delete(cliente)

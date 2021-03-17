@@ -54,8 +54,7 @@ class ClienteCollection(Resource):
                 id_pessoa=Pessoa.query.filter_by(rg=data["rg"]).first().id_pessoa) is not None:
                 name_space.abort(400, status="CPF ou RG já cadastrado(s)", statusCode="400")
 
-            elif Pessoa.query.filter_by(cpf=data["cpf"]).first() == Pessoa.query.filter_by(
-                    rg=data["rg"]).first():
+            elif Pessoa.query.filter_by(cpf=data["cpf"]).first() == Pessoa.query.filter_by(rg=data["rg"]).first():
                 pessoa = Pessoa.query.filter_by(cpf=data["cpf"]).first()
                 cliente = Cliente(id_pessoa=pessoa.id_pessoa)
                 db.session.add(cliente)
@@ -98,7 +97,7 @@ class ClienteEntity(Resource):
                     pessoa.profissao = data["profissao"]
                 db.session.add(pessoa)
                 db.session.commit()
-                return jsonify([pessoa])
+                return jsonify(pessoa)
             return Response(status=404)
 
         except KeyError as e:

@@ -1,12 +1,14 @@
-from flask import Blueprint, request, flash, jsonify, Response
-import datetime
-from API.models import Vendedor, Pessoa, db
+from flask import Blueprint, jsonify, Response
 from flask_restplus import Api, Resource, fields
 
-vendedor_blueprint = Blueprint('vendedor_bp', __name__, url_prefix="/ns3")
-api = Api(vendedor_blueprint, doc='/api/docs/vendedor')
+from API.models import Vendedor, Pessoa, db
 
-name_space = api.namespace("vendedor", descrption="Vendedores API documentation")
+vendedor_blueprint = Blueprint('vendedor_bp', __name__, url_prefix="/ns3")
+api = Api(vendedor_blueprint, doc='/api/docs/vendedor', version="1.0",
+          title="Vendedor Admin",
+          description="Gerencia os dados referentes aos vendedores")
+
+name_space = api.namespace("vendedor", descrption="Vendedores API")
 
 
 vendedor_fields = api.model('Vendedor', {
@@ -33,7 +35,7 @@ vendedor_dto = api.model('VendedorDTO', {
 
 
 @name_space.route('/', methods=['POST', 'GET'])
-class VendedorColection(Resource):
+class VendedorCollection(Resource):
     @name_space.expect(vendedor_fields, validate=True)
     @name_space.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error'})
     def post(self):
@@ -47,13 +49,18 @@ class VendedorColection(Resource):
                 vendedor = Vendedor(id_pessoa=pessoa.id_pessoa)
                 db.session.add(vendedor)
                 db.session.commit()
-                return jsonify([pessoa])
+                return jsonify(pessoa)
+            elif Vendedor.query.filter_by(id_pessoa=Pessoa.query.filter_by(
+                    cpf=data["cpf"]).first().id_pessoa) is not None or Vendedor.query.filter_by(
+                id_pessoa=Pessoa.query.filter_by(rg=data["rg"]).first().id_pessoa) is not None:
+                name_space.abort(400, status="CPF ou RG já cadastrado(s)", statusCode="400")
+
             elif Pessoa.query.filter_by(cpf=data["cpf"]).first() == Pessoa.query.filter_by(rg=data["rg"]).first():
                 pessoa = Pessoa.query.filter_by(cpf=data["cpf"]).first()
                 vendedor = Vendedor(id_pessoa=pessoa.id_pessoa)
                 db.session.add(vendedor)
                 db.session.commit()
-                return jsonify([pessoa])
+                return jsonify(pessoa)
             else:
                 return Response(status=400)
 
@@ -73,23 +80,23 @@ class VendedorColection(Resource):
         return jsonify(pessoas)
 
 
-@name_space.route('/<int:id>', methods=['POST', 'GET', 'PUT'])
+@name_space.route('/<int:id>', methods=['PUT', 'GET', 'DELETE'])
 class VendedorEntity(Resource):
     @name_space.expect(vendedor_dto, validate=True)
     @name_space.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error', 404: "Not Found"})
-    def post(self, id):
+    def put(self, id):
         data = name_space.payload
         try:
             if Vendedor.query.filter_by(id_pessoa=id).first() is not None:
                 pessoa = Pessoa.query.filter_by(id_pessoa=id).first()
-                if data.get("nome") is not None and data.get("nome") != "string":
+                if data.get("nome") is not None:
                     pessoa.nome = data["nome"]
-                if data.get("estado_civil_pessoa") is not None and data.get("estado_civil_pessoa") != "string":
-                    pessoa.data_nascimento = data["estado_civil_pessoa"]
-                if data.get("profissao") is not None and data.get("profissao") != "string":
+                if data.get("estado_civil_pessoa") is not None:
+                    pessoa.estado_civil_pessoa = data["estado_civil_pessoa"]
+                if data.get("profissao") is not None:
                     pessoa.profissao = data["profissao"]
                 db.session.commit()
-                return jsonify([pessoa])
+                return jsonify(pessoa)
             return Response(status=404)
 
         except KeyError as e:
@@ -106,7 +113,7 @@ class VendedorEntity(Resource):
         return Response(status=404)
 
     @name_space.doc(responses={200: 'OK', 404: 'Not Found'})
-    def put(self, id):
+    def delete(self, id):
         vendedor = Vendedor.query.filter_by(id_pessoa=id).first()
         if vendedor:
             db.session.delete(vendedor)

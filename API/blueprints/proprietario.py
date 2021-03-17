@@ -1,12 +1,15 @@
-from flask import Blueprint, request, flash, jsonify, Response
-import datetime
-from API.models import Proprietario, Pessoa, db
+from flask import Blueprint, jsonify, Response
 from flask_restplus import Api, Resource, fields
 
-proprietario_blueprint = Blueprint('proprietario_bp', __name__, url_prefix="/ns2")
-api = Api(proprietario_blueprint, doc='/api/docs/proprietario')
+from API.models import Proprietario, Pessoa, db
 
-name_space = api.namespace("proprietario", descrption="Proprietários API documentation")
+proprietario_blueprint = Blueprint('proprietario_bp', __name__, url_prefix="/api/ns2")
+api = Api(proprietario_blueprint, doc='/docs/proprietario', version="1.0",
+          title="Proprietario Admin",
+          description="Gerencia os dados referentes aos proprietários")
+
+name_space = api.namespace("proprietario", description="Proprietário API")
+
 
 proprietario_fields = api.model('Proprietario', {
     'nome': fields.String(required=True, description="Nome de uma pessoa", help="Nome não pode ficar em branco."),
@@ -31,7 +34,7 @@ proprietario_dto = api.model('ProprietarioDTO', {
 
 
 @name_space.route('/', methods=['POST', 'GET'])
-class ProprietarioColection(Resource):
+class ProprietarioCollection(Resource):
     @name_space.expect(proprietario_fields, validate=True)
     @name_space.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error'})
     def post(self):
@@ -45,20 +48,25 @@ class ProprietarioColection(Resource):
                 proprietario = Proprietario(id_pessoa=pessoa.id_pessoa)
                 db.session.add(proprietario)
                 db.session.commit()
-                return jsonify([pessoa])
+                return jsonify(pessoa)
+            elif Proprietario.query.filter_by(id_pessoa=Pessoa.query.filter_by(
+                    cpf=data["cpf"]).first().id_pessoa) is not None or Proprietario.query.filter_by(
+                id_pessoa=Pessoa.query.filter_by(rg=data["rg"]).first().id_pessoa) is not None:
+                name_space.abort(400, status="CPF ou RG já cadastrado(s)", statusCode="400")
+
             elif Pessoa.query.filter_by(cpf=data["cpf"]).first() == Pessoa.query.filter_by(rg=data["rg"]).first():
                 pessoa = Pessoa.query.filter_by(cpf=data["cpf"]).first()
                 proprietario = Proprietario(id_pessoa=pessoa.id_pessoa)
                 db.session.add(proprietario)
                 db.session.commit()
-                return jsonify([pessoa])
+                return jsonify(pessoa)
             else:
                 return Response(status=400)
 
         except KeyError as e:
-            name_space.abort(500, e.__doc__, status="Could not retrieve information", statusCode="500")
+            name_space.abort(500, e.__doc__, status="Could not save information", statusCode="500")
         except Exception as e:
-            name_space.abort(400, e.__doc__, status="Could not retrieve information", statusCode="400")
+            name_space.abort(400, e.__doc__, status="Could not save information", statusCode="400")
 
     @name_space.doc(responses={200: 'OK'})
     def get(self):
@@ -71,23 +79,23 @@ class ProprietarioColection(Resource):
         return jsonify(pessoas)
 
 
-@name_space.route('/<int:id>', methods=['POST', 'GET', 'PUT'])
+@name_space.route('/<int:id>', methods=['PUT', 'GET', 'DELETE'])
 class ProprietarioEntity(Resource):
     @name_space.expect(proprietario_dto, validate=True)
     @name_space.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error', 404: "Not Found"})
-    def post(self, id):
+    def put(self, id):
         data = name_space.payload
         try:
             if Proprietario.query.filter_by(id_pessoa=id).first() is not None:
                 pessoa = Pessoa.query.filter_by(id_pessoa=id).first()
-                if data.get("nome") is not None and data.get("nome") != "string":
+                if data.get("nome") is not None:
                     pessoa.nome = data["nome"]
-                if data.get("estado_civil_pessoa") is not None and data.get("estado_civil_pessoa") != "string":
-                    pessoa.data_nascimento = data["estado_civil_pessoa"]
-                if data.get("profissao") is not None and data.get("profissao") != "string":
+                if data.get("estado_civil_pessoa") is not None:
+                    pessoa.estado_civil_pessoa = data["estado_civil_pessoa"]
+                if data.get("profissao") is not None:
                     pessoa.profissao = data["profissao"]
                 db.session.commit()
-                return jsonify([pessoa])
+                return jsonify(pessoa)
             return Response(status=404)
 
         except KeyError as e:
@@ -104,7 +112,7 @@ class ProprietarioEntity(Resource):
         return Response(status=404)
 
     @name_space.doc(responses={200: 'OK', 404: 'Not Found'})
-    def put(self, id):
+    def delete(self, id):
         proprietario = Proprietario.query.filter_by(id_pessoa=id).first()
         if proprietario:
             db.session.delete(proprietario)

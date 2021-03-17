@@ -64,11 +64,11 @@ class ImovelCollection(Resource):
         return jsonify([imoveis])
 
 
-@name_space.route('/<int:id>', methods=['POST', 'GET', 'PUT'])
+@name_space.route('/<int:id>', methods=['PUT', 'GET', 'DELETE'])
 class ImovelEntity(Resource):
     @name_space.expect(imovel_dto, validate=True)
     @name_space.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error', 404: "Not Found"})
-    def post(self, id):
+    def put(self, id):
         data = name_space.payload
         try:
             if Imovel.query.filter_by(id_imovel=id).first() is not None:
@@ -92,7 +92,7 @@ class ImovelEntity(Resource):
         return Response(status=404)
 
     @name_space.doc(responses={200: 'OK', 404: 'Not Found'})
-    def put(self, id):
+    def delete(self, id):
         imovel = Imovel.query.filter_by(id_imovel=id).first()
         if imovel:
             db.session.delete(imovel)

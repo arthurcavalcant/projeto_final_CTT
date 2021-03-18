@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+<body>
+
+<nav class="navbar is-light">
+  <div class="container">
+    <div class="navbar-brand"><a class="navbar-item" href="/clientes">Clientes</a>
+      <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/proprietarios">Proprietários</a>
+        <a class="navbar-item" href="/vendedores">Vendedores</a>
+        <a class="navbar-item" href="/imoveis">Imóveis</a>
+        <a class="navbar-item" href="/vendas">Vendas</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="section has-text-centered">
+  <h1 class="title">
+    Novo proprietário
+  </h1>
+</section>
+
+<section class="section is-center mx-6">
+  <article class="message is-warning is-centered is-medium is-half-widescreen">
+    <div class="message-header">
+      <p>Observações:</p>
+    </div>
+    <div class="message-body">
+      <p>Nenhum campo pode ficar em branco.</p>
+      <p>Digite apenas números para o CPF (11 números) e RG (7 números).</p>
+      <p>Caso o CPF e o RG estejam vinculados à um vendedor ou cliente, as informações serão repetidas para o cliente.</p>
+      <p>Se por acaso, apenas o CPF já estiver sido usado ou apenas o RG, o cadastro não será realizado.</p>
+    </div>
+  </article>
+</section>
+
+
+<div class="columns is-centered is-vcentered">
+  <div class="column is-narrow has-text-centered">
+
+    <div class="box has-text-centered">
+
+      <div class="container has-text-centered">
+
+        <div>
+          <div class="field">
+            <label class="label">Nome</label>
+            <input #nome class="input" type="text" id="nome" value="" name="nome"/> <br><br>
+          </div>
+
+          <div class="field">
+            <label class="label">CPF</label>
+            <input #cpf class="input" type="text" id="cpf" name="cpf"/> <br><br>
+          </div>
+
+          <div class="field">
+            <label class="label">RG</label>
+            <input #rg class="input" type="text" id="rg" name="cpf"/> <br><br>
+          </div>
+
+          <div class="field">
+            <label class="label">Data Nascimento</label>
+            <input #data_nascimento class="input" name="datanascimento" type="date" id="data_nascimento"
+                   name="data_nascimento"/>
+            <br><br>
+          </div>
+
+          <label class="label">Estado Civil</label>
+          <div class="select">
+            <select #estado_civil id="estado_civil" name="estado_civil">
+              <option value="solteira">Solteiro</option>
+              <option value="casada">Casado</option>
+              <option value="viúva">Viúvo</option>
+              <option value="divorciada">Divorciado</option>
+              <option value="uniao estavel">União Estável</option>
+            </select>
+          </div>
+          <br><br>
+
+          <label class="label">Profissão</label>
+          <input #profissao class="input" type="text" id="profissao" value="" name="profissao"/> <br><br>
+        </div>
+
+        <div class="is-centered">
+          <button class="button is-success" routerLink="/proprietarios"
+                  (click)="insereNovoProprietario(nome.value, cpf.value, rg.value, data_nascimento.value, estado_civil.value, profissao.value)">
+            Inserir
+          </button>
+          <br><br>
+          <button class="button" routerLink="/proprietarios">Voltar</button>
+        </div>
+
+        <br>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+
+</html>
+
+
+
+
+
+
+

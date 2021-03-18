@@ -47,6 +47,7 @@ class Cliente(db.Model):
                           unique=True)
 
 
+@dataclass
 class Vendedor(db.Model):
     id_vendedor: int
     id_pessoa: int
@@ -56,6 +57,7 @@ class Vendedor(db.Model):
                           nullable=False)
 
 
+@dataclass
 class Imovel(db.Model):
     id_imovel: int
     id_proprietario: int
@@ -83,6 +85,7 @@ class Imovel(db.Model):
     data_posse_proprietario = db.Column(db.DATE, nullable=False)
 
 
+@dataclass
 class Banco(db.Model):
     id_banco: int
     codigo_banco: int
@@ -93,16 +96,17 @@ class Banco(db.Model):
     nome = db.Column(db.VARCHAR(255), nullable=False)
 
 
+@dataclass
 class Venda(db.Model):
-    id_compra: int
+    id_venda: int
     id_imovel: int
     id_proprietario: int
     id_cliente: int
     id_vendedor: int
     valor: float
-    tipo_compra: str
+    tipo_venda: str
 
-    id_compra = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    id_venda = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
     id_imovel = db.Column(db.INTEGER, db.ForeignKey('imovel.id_imovel', ondelete='CASCADE', onupdate='CASCADE'),
                           nullable=False)
     id_proprietario = db.Column(db.INTEGER,
@@ -112,34 +116,36 @@ class Venda(db.Model):
                            nullable=False)
     id_vendedor = db.Column(db.INTEGER, db.ForeignKey('vendedor.id_vendedor', ondelete='CASCADE', onupdate='CASCADE'),
                             nullable=False)
-    valor = db.Column(db.NUMERIC, nullable=False)
-    tipo_compra = db.Column(db.Enum('à vista', 'financiamento', name='tipo_compra'), nullable=False)
+    valor = db.Column(db.FLOAT, nullable=False)
+    tipo_venda = db.Column(db.Enum('à vista', 'financiamento', name='tipo_venda'), nullable=False)
 
 
+@dataclass
 class Financiamento(db.Model):
     id_financiamento: int
-    id_compra: int
+    id_venda: int
     id_banco: int
     parcelas: int
     entrada_porcentagem: int
 
     id_financiamento = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
-    id_compra = db.Column(db.INTEGER, db.ForeignKey('compra.id_compra', ondelete='CASCADE', onupdate='CASCADE'),
-                          nullable=False)
+    id_venda = db.Column(db.INTEGER, db.ForeignKey('venda.id_venda', ondelete='CASCADE', onupdate='CASCADE'),
+                         nullable=False)
     id_banco = db.Column(db.INTEGER, db.ForeignKey('banco.id_banco', ondelete='CASCADE', onupdate='CASCADE'),
                          nullable=False)
     parcelas = db.Column(db.INTEGER, nullable=False)
     entrada_porcentagem = db.Column(db.INTEGER, nullable=False)
 
 
+@dataclass
 class GastoPreVenda(db.Model):
     id_gasto_pre_venda: int
-    id_compra: int
+    id_venda: int
     nome: str
     valor: float
 
     id_gasto_pre_venda = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
-    id_compra = db.Column(db.INTEGER, db.ForeignKey('compra.id_compra', ondelete='CASCADE', onupdate='CASCADE'),
-                          nullable=False)
+    id_venda = db.Column(db.INTEGER, db.ForeignKey('venda.id_venda', ondelete='CASCADE', onupdate='CASCADE'),
+                         nullable=False)
     nome = db.Column(db.VARCHAR(255), nullable=False)
     valor = db.Column(db.NUMERIC, nullable=False)

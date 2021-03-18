@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+<body>
+
+<nav class="navbar is-light">
+  <div class="container">
+    <div class="navbar-brand"><a class="navbar-item" href="/clientes">Clientes</a>
+      <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/proprietarios">Proprietários</a>
+        <a class="navbar-item" href="/vendedores">Vendedores</a>
+        <a class="navbar-item" href="/imoveis">Imóveis</a>
+        <a class="navbar-item" href="/vendas">Vendas</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <h1 class="title">
+      Altera cliente
+    </h1>
+  </div>
+</section>
+
+
+<div class="columns is-centered is-vcentered">
+  <div class="column is-narrow has-text-centered">
+
+    <div class="box has-text-centered">
+
+      <section class="section">
+        <div class="container has-text-centered">
+
+          <label class="label">Nome</label>
+          <input #nome class="input" type="text" id="nome" value="{{cliente.nome}}" name="nome"/> <br><br>
+          <label class="label">ID do Cliente: {{cliente.id_pessoa}}</label>
+          <label class="label">CPF: {{cliente.cpf}}</label>
+          <label class="label">RG: {{cliente.rg}}</label>
+          <label class="label">RG: {{cliente.data_nascimento | date: 'dd/MM/yyyy'}}</label>
+          <label class="label">Estado Civil</label>
+          <div class="select">
+            <select #estado_civil id="estado_civil" name="estado_civil" value="{{cliente.estado_civil_pessoa}}">
+              <option value="solteira">Solteiro</option>
+              <option value="casada">Casado</option>
+              <option value="viúva">Viúvo</option>
+              <option value="divorciada">Divorciado</option>
+              <option value="uniao estavel">União Estável</option>
+            </select></div>
+          <br><br>
+          <label class="label">Profissão</label>
+          <input #profissao class="input" type="text" id="profissao" value="{{cliente.profissao}}" name="profissao"/>
+          <br><br>
+
+          <button class="button mx-6" routerLink="/clientes" value="Voltar">Voltar</button>
+          <button routerLink="/clientes" class="button is-success mx-6"
+                  (click)="atualizaCliente(nome.value, estado_civil.value, profissao.value, cliente.id_pessoa)"
+                  value="Salvar">Salvar
+          </button>
+
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+</body>
+
+
+</html>
+

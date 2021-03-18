@@ -24,12 +24,12 @@ venda_fields = api.model('Venda', {
                                   help="Vendedor deve ter sido previamente cadastrado."),
     "valor": fields.Float(required=True, description="Valor da compra", min=0.0,
                           help="Valor da compra não pode ser negativo."),
-    "tipo_compra": fields.String(enum=['à vista', 'financiamento'], required=True, description="Tipo da compra",
-                                 help="Tipo da compra não pode ficar em branco"),
+    "tipo_venda": fields.String(enum=['à vista', 'financiamento'], required=True, description="Tipo da compra",
+                                 help="Tipo da venda não pode ficar em branco"),
 })
 
-financiamento_fields = api.model('Finaciamento', {
-    "id_compra": fields.Integer(required=True, description="ID da compra",
+financiamento_fields = api.model('Financiamento', {
+    "id_venda": fields.Integer(required=True, description="ID da compra",
                                 help="Compra deve ter sido previamente registrada."),
     "id_banco": fields.Integer(required=True, description="ID do banco",
                                help="Banco deve ter sido previamente cadastrado."),
@@ -42,7 +42,7 @@ financiamento_fields = api.model('Finaciamento', {
 
 
 @name_space.route('/', methods=['POST', 'GET'])
-class CompraCollection(Resource):
+class VendaCollection(Resource):
     @name_space.expect(venda_fields, validate=True)
     @name_space.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error', 404: 'Not Found'})
     def post(self):
@@ -54,8 +54,17 @@ class CompraCollection(Resource):
                     Imovel.query.filter_by(id_imovel=data["id_imovel"]).first() is None:
                 return Response(status=404)
             else:
-                compra = Venda(**data)
-                db.session.add(compra)
+
+                antigo_proprietario = Proprietario.query.filter_by(id_pessoa=data["id_proprietario"]).first()
+                atual_cliente = Cliente.query.filter_by(id_pessoa=data["id_cliente"]).first()
+                atual_vendedor = Vendedor.query.filter_by(id_pessoa=data["id_vendedor"]).first()
+
+                new_data = {"id_imovel": data["id_imovel"], "id_proprietario": antigo_proprietario.id_proprietario,
+                            "id_cliente": atual_cliente.id_cliente, "id_vendedor": atual_vendedor.id_vendedor,
+                            "valor": data["valor"], "tipo_venda":data["tipo_venda"]}
+
+                venda = Venda(**new_data)
+                db.session.add(venda)
                 db.session.commit()
 
                 cliente = Cliente.query.filter_by(id_pessoa=data["id_cliente"]).first()
@@ -68,7 +77,7 @@ class CompraCollection(Resource):
                 imovel.data_posse_proprietario = datetime.date.today()
                 db.session.commit()
 
-                return jsonify(compra)
+                return jsonify(venda)
 
         except KeyError as e:
             name_space.abort(500, e.__doc__, status="Could not save information", statusCode="500")
@@ -77,33 +86,51 @@ class CompraCollection(Resource):
 
     @name_space.doc(responses={200: 'OK'})
     def get(self):
-        compras = Venda.query.order_by(Venda.id_compra).all()
+        vendas = Venda.query.order_by(Venda.id_venda).all()
 
-        return jsonify([compras])
+        vendas_com_ids = []
+        for venda in vendas:
+            proprietario = Proprietario.query.filter_by(id_proprietario=venda.id_proprietario).first()
+            cliente = Cliente.query.filter_by(id_cliente=venda.id_cliente).first()
+            vendedor = Vendedor.query.filter_by(id_vendedor=venda.id_vendedor).first()
+            venda_com_id = dict(
+                {"id_imovel":venda.id_imovel ,"id_venda": venda.id_venda, "valor": venda.valor, "tipo_venda": venda.tipo_venda})
+            venda_com_id["id_proprietario"] = proprietario.id_pessoa
+            venda_com_id["id_cliente"] = cliente.id_pessoa
+            venda_com_id["id_vendedor"] = vendedor.id_pessoa
+            vendas_com_ids.append(venda_com_id)
+        return jsonify(vendas_com_ids)
 
 
 @name_space.route('/<int:id>', methods=['GET', 'DELETE'])
-class CompraEntity(Resource):
+class VendaEntity(Resource):
     @name_space.doc(responses={200: 'OK', 404: 'Not Found'})
     def get(self, id):
-        """Returns list of blog categories."""
-        compra = Venda.query.filter_by(id_compra=id).first()
-        if compra:
-            return jsonify(compra)
+        venda = Venda.query.filter_by(id_compra=id).first()
+        if venda:
+            proprietario = Proprietario.query.filter_by(id_proprietario=venda.id_proprietario).first()
+            cliente = Cliente.query.filter_by(id_cliente=venda.id_cliente).first()
+            vendedor = Vendedor.query.filter_by(id_vendedor=venda.id_vendedor).first()
+            venda_com_id = dict(
+                {"id_venda": venda.id_venda, "valor": venda.valor, "tipo_venda": venda.tipo_venda})
+            venda_com_id["id_proprietario"] = proprietario.id_pessoa
+            venda_com_id["id_cliente"] = cliente.id_pessoa
+            venda_com_id["id_vendedor"] = vendedor.id_pessoa
+            return jsonify(venda_com_id)
         return Response(status=404)
 
     @name_space.doc(responses={200: 'OK', 404: 'Not Found'})
     def delete(self, id):
-        compra = Venda.query.filter_by(id_compra=id).first()
-        if compra:
-            db.session.delete(compra)
+        venda = Venda.query.filter_by(id_compra=id).first()
+        if venda:
+            db.session.delete(venda)
             db.session.commit()
             return Response(status=200)
         return Response(status=404)
 
 
 @name_space.route('/financiamento', methods=['POST', 'GET'])
-class CompraFinanciamentoCollection(Resource):
+class VendaFinanciamentoCollection(Resource):
     @name_space.expect(financiamento_fields, validate=True)
     @name_space.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error', 404: "Not Found"})
     def post(self):
@@ -112,7 +139,7 @@ class CompraFinanciamentoCollection(Resource):
             compra = Venda.query.filter_by(id_compra=data.get("id_compra")).first()
             banco = Banco.query.filter_by(id_banco=data.get("id_banco")).first()
             if compra is not None and banco is not None:
-                if compra.tipo_compra == "à vista":
+                if compra.tipo_venda == "à vista":
                     return Response(status=400)
 
                 financiamento = Financiamento(**data)

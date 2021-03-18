@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, Response
 from flask_restplus import Api, Resource, fields
 
-from API.models import Proprietario, Imovel, db
+from API.models import Proprietario, Imovel, db, Pessoa
 
 imovel_blueprint = Blueprint('imovel_bp', __name__, url_prefix="/api/ns4")
 api = Api(imovel_blueprint, doc='/docs/imovel',
@@ -44,11 +44,17 @@ class ImovelCollection(Resource):
     def post(self):
         data = name_space.payload
         try:
-            if Proprietario.query.filter_by(id_proprietario=data["id_proprietario"]).first() is not None:
-                imovel = Imovel(**data)
-                db.session.add(imovel)
-                db.session.commit()
-                return jsonify(imovel)
+            pessoa = Pessoa.query.filter_by(id_pessoa=data["id_proprietario"]).first()
+            if pessoa:
+                if Proprietario.query.filter_by(id_pessoa=pessoa.id_pessoa).first() is not None:
+                    proprietario = Proprietario.query.filter_by(id_pessoa=pessoa.id_pessoa).first()
+                    data["id_proprietario"] = proprietario.id_proprietario
+                    imovel = Imovel(**data)
+                    db.session.add(imovel)
+                    db.session.commit()
+                    return jsonify(imovel)
+                else:
+                    return Response(status=404)
             else:
                 return Response(status=404)
 
@@ -61,7 +67,16 @@ class ImovelCollection(Resource):
     def get(self):
         imoveis = Imovel.query.order_by(Imovel.id_imovel).all()
 
-        return jsonify([imoveis])
+        imoveis_com_pessoas = []
+        for imovel in imoveis:
+            proprietario = Proprietario.query.filter_by(id_proprietario=imovel.id_proprietario).first()
+            imovel_com_pessoa = dict({"id_imovel": imovel.id_imovel, "tipo_imovel": imovel.tipo_imovel, "rua":imovel.rua,
+                                      "numero": imovel.numero, "cep": imovel.cep, "cidade": imovel.cidade, "bloco": imovel.bloco,
+                                      "uf": imovel.uf, "data_posse_proprietario": imovel.data_posse_proprietario})
+            imovel_com_pessoa["id_proprietario"] = proprietario.id_pessoa
+            imoveis_com_pessoas.append(imovel_com_pessoa)
+
+        return jsonify(imoveis_com_pessoas)
 
 
 @name_space.route('/<int:id>', methods=['PUT', 'GET', 'DELETE'])
@@ -88,7 +103,13 @@ class ImovelEntity(Resource):
     def get(self, id):
         imovel = Imovel.query.filter_by(id_imovel=id).first()
         if imovel:
-            return jsonify(imovel)
+            proprietario = Proprietario.query.filter_by(id_proprietario=imovel.id_proprietario).first()
+            imovel_com_pessoa = dict(
+                {"id_imovel": imovel.id_imovel, "tipo_imovel": imovel.tipo_imovel, "rua": imovel.rua,
+                 "numero": imovel.numero, "cep": imovel.cep, "cidade": imovel.cidade, "bloco": imovel.bloco,
+                 "uf": imovel.uf, "data_posse_proprietario": imovel.data_posse_proprietario})
+            imovel_com_pessoa["id_proprietario"] = proprietario.id_pessoa
+            return jsonify(imovel_com_pessoa)
         return Response(status=404)
 
     @name_space.doc(responses={200: 'OK', 404: 'Not Found'})

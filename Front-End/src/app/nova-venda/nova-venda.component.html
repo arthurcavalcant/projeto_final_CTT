@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+<body>
+
+<nav class="navbar is-light">
+  <div class="container">
+    <div class="navbar-brand"><a class="navbar-item" href="/clientes">Clientes</a>
+      <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/proprietarios">Proprietários</a>
+        <a class="navbar-item" href="/vendedores">Vendedores</a>
+        <a class="navbar-item" href="/imoveis">Imóveis</a>
+        <a class="navbar-item" href="/vendas">Vendas</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="section has-text-centered">
+  <h1 class="title">
+    Nova venda
+  </h1>
+</section>
+
+<section class="section is-center mx-6">
+  <article class="message is-warning is-centered is-medium is-half-widescreen">
+    <div class="message-header">
+      <p>Observações:</p>
+    </div>
+    <div class="message-body">
+      <p>Nenhum campo pode ficar em branco.</p>
+    </div>
+  </article>
+</section>
+
+
+<div class="columns is-centered is-vcentered">
+  <div class="column is-narrow has-text-centered">
+
+    <div class="box has-text-centered">
+
+      <div class="container has-text-centered">
+
+        <div>
+          <div class="field">
+            <label class="label">ID do Imóvel</label>
+            <input #id_imovel class="input" type="text" id="id_imovel" value="" name="id_imovel"/> <br><br>
+          </div>
+
+          <div class="field">
+            <label class="label">ID do antigo Proprietário</label>
+            <input #id_proprietario class="input" type="text" id="id_proprietario" name="id_proprietario"/> <br><br>
+          </div>
+
+          <div class="field">
+            <label class="label">ID do Cliente</label>
+            <input #id_cliente class="input" type="text" id="id_cliente" name="id_cliente"/> <br><br>
+          </div>
+
+          <div class="field">
+            <label class="label">ID do Vendedor</label>
+            <input #id_vendedor class="input" type="text" id="id_vendedor" name="id_vendedor"/> <br><br>
+          </div>
+
+          <label class="label">Tipo da venda</label>
+          <div class="select">
+            <select #tipo_venda id="tipo_venda" name="tipo_venda">
+              <option value="à vista">À vista</option>
+              <option value="financiamento">Financiamento</option>
+            </select>
+          </div>
+          <br><br>
+
+          <label class="label">Valor</label>
+          <input #valor class="input" type="text" id="valor" placeholder="0,00" name="valor"/> <br><br>
+        </div>
+
+        <div class="is-centered">
+          <button class="button is-success" routerLink="/vendas"
+                  (click)="insereNovaVenda(id_imovel.value, id_proprietario.value, id_cliente.value, id_vendedor.value,
+                   tipo_venda.value, valor.value)">
+            Inserir
+          </button>
+          <br><br>
+          <button class="button" routerLink="/vendas">Voltar</button>
+        </div>
+
+        <br>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+
+</html>
+
+
+
+
+
+
+

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+<body>
+
+<nav class="navbar is-light">
+  <div class="container">
+    <div class="navbar-brand"><a class="navbar-item" href="/clientes">Clientes</a>
+      <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/proprietarios">Proprietários</a>
+        <a class="navbar-item" href="/vendedores">Vendedores</a>
+        <a class="navbar-item" href="/imoveis">Imóveis</a>
+        <a class="navbar-item" href="/vendas">Vendas</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <h1 class="title">
+      Altera proprietário
+    </h1>
+    <br>
+    <br>
+    <br>
+  </div>
+</section>
+
+
+<div class="columns is-centered is-vcentered">
+  <div class="column is-narrow has-text-centered">
+
+    <div class="box has-text-centered">
+
+      <section class="section">
+        <div class="container has-text-centered">
+
+
+          <label>Nome</label>
+          <input #nome type="text" id="nome" value="{{vendedor.nome}}" name="nome"/> <br><br>
+          <div>CPF: {{vendedor.cpf}}</div>
+          <div>CPF: {{vendedor.id_pessoa}}</div>
+          <div>RG: {{vendedor.rg}}</div>
+          <div>RG: {{vendedor.data_nascimento | date: 'dd/MM/yyyy'}}</div>
+          <label>Estado Civil</label>
+          <select #estado_civil id="estado_civil" name="estado_civil" value="{{vendedor.estado_civil_pessoa}}">
+            <option value="solteira">Solteiro</option>
+            <option value="casada">Casado</option>
+            <option value="viúva">Viúvo</option>
+            <option value="divorciada">Divorciado</option>
+            <option value="uniao estavel">União Estável</option>
+          </select><br><br>
+          <label>Profissão</label>
+          <input #profissao type="text" id="profissao" value="{{vendedor.profissao}}" name="profissao"/> <br><br>
+
+
+          <br><br>
+          <button class="button mx-6" routerLink="/vendedores">Voltar</button>
+          <button class="button is-success mx-6" routerLink="/vendedores"
+                  (click)="atualizaVendedor(nome.value, estado_civil.value, profissao.value, vendedor.id_pessoa)"
+          >Salvar
+          </button>
+
+
+          <br>
+
+
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+</body>
+
+
+</html>
+

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+<body>
+
+<nav class="navbar is-light">
+  <div class="container">
+    <div class="navbar-brand"><a class="navbar-item" href="/clientes">Clientes</a>
+      <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/proprietarios">Proprietários</a>
+        <a class="navbar-item" href="/vendedores">Vendedores</a>
+        <a class="navbar-item" href="/imoveis">Imóveis</a>
+        <a class="navbar-item" href="/vendas">Vendas</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="section has-text-centered">
+  <h1 class="title">
+    Novo imóvel
+  </h1>
+</section>
+
+<section class="section is-center mx-6">
+  <article class="message is-warning is-centered is-medium is-half-widescreen">
+    <div class="message-header">
+      <p>Observações:</p>
+    </div>
+    <div class="message-body">
+      <p>Nenhum campo pode ficar em branco.</p>
+      <p>Digite apenas números para o CPF (11 números) e RG (7 números).</p>
+      <p>Caso o CPF e o RG estejam vinculados à um vendedor ou cliente, as informações serão repetidas para o
+        cliente.</p>
+      <p>Se por acaso, apenas o CPF já estiver sido usado ou apenas o RG, o cadastro não será realizado.</p>
+    </div>
+  </article>
+</section>
+
+
+<div class="columns is-centered is-vcentered">
+  <div class="column is-narrow has-text-centered">
+
+    <div class="box has-text-centered">
+
+      <div class="container has-text-centered">
+
+        <div>
+          <div class="field">
+            <label class="label">ID do Proprietário</label>
+            <input #id_proprietario class="input" type="text" id="id_proprietario" value="" name="id_proprietario"/> <br><br>
+          </div>
+
+        <label class="label">Tipo do imóvel</label>
+        <div class="select">
+          <select #tipo_imovel id="tipo_imovel" name="tipo_imovel">
+            <option value="apartamento">Apartamento</option>
+            <option value="casa">Casa</option>
+            <option value="kitnet">Kitnet</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="field">
+            <label class="label">Rua</label>
+            <input #rua class="input" type="text" id="rua" value="" name="rua"/> <br><br>
+          </div>
+
+          <div class="field">
+            <label class="label">Número</label>
+            <input #numero class="input" type="text" id="numero" name="numero"/> <br><br>
+          </div>
+
+          <div class="field">
+            <label class="label">Andar</label>
+            <input #andar class="input" type="text" id="andar" name="andar"/> <br><br>
+          </div>
+
+          <div class="field">
+            <label class="label">Bloco</label>
+            <input #bloco class="input" type="text" id="bloco" value="" name="bloco"/> <br><br>
+          </div>
+
+          <div class="field">
+            <label class="label">CEP</label>
+            <input #cep class="input" type="text" id="cep" value="" name="cep"/> <br><br>
+          </div>
+
+          <div class="field">
+            <label class="label">Cidade</label>
+            <input #cidade class="input" type="text" id="cidade" value="" name="cidade"/> <br><br>
+          </div>
+
+          <label class="label">Estado</label>
+          <div class="select">
+            <select #uf id="estado" name="estado" required>
+              <option selected disabled value="">Selecione</option>
+              <option value="AC">Acre</option>
+              <option value="AL">Alagoas</option>
+              <option value="AP">Amapá</option>
+              <option value="AM">Amazonas</option>
+              <option value="BA">Bahia</option>
+              <option value="CE">Ceará</option>
+              <option value="DF">Distrito Federal</option>
+              <option value="ES">Espírito Santo</option>
+              <option value="GO">Goiás</option>
+              <option value="MA">Maranhão</option>
+              <option value="MT">Mato Grosso</option>
+              <option value="MS">Mato Grosso do Sul</option>
+              <option value="MG">Minas Gerais</option>
+              <option value="PA">Pará</option>
+              <option value="PB">Paraíba</option>
+              <option value="PR">Paraná</option>
+              <option value="PE">Pernambuco</option>
+              <option value="PI">Piauí</option>
+              <option value="RJ">Rio de Janeiro</option>
+              <option value="RN">Rio Grande do Norte</option>
+              <option value="RS">Rio Grande do Sul</option>
+              <option value="RO">Rondônia</option>
+              <option value="RR">Roraima</option>
+              <option value="SC">Santa Catarina</option>
+              <option value="SP">São Paulo</option>
+              <option value="SE">Sergipe</option>
+              <option value="TO">Tocantins</option>
+            </select>
+          </div>
+          <br><br>
+
+
+          <div class="field">
+            <label class="label">Data de Posse do Proprietário</label>
+            <input #data_posse_proprietario class="input" name="data_posse_proprietario" type="date"
+                   id="data_posse_proprietario"
+                   name="data_posse_proprietario"/>
+            <br>
+          </div>
+
+          <br><br>
+
+          <div class="is-centered">
+            <button class="button is-success" routerLink="/imoveis"
+                    (click)="insereNovoImovel(id_proprietario.value, tipo_imovel.value, rua.value, numero.value, andar.value, bloco.value,
+              cep.value, cidade.value, uf.value, data_posse_proprietario.value)">
+              Inserir
+            </button>
+            <br><br>
+            <button class="button" routerLink="/imoveis">Voltar</button>
+          </div>
+
+          <br>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+
+
+</html>
+
+
+
+
+
+
+

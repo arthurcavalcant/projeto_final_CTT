@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+<body>
+
+<nav class="navbar is-light">
+  <div class="container">
+    <div class="navbar-brand"><a class="navbar-item" href="/clientes">Clientes</a>
+      <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/proprietarios">Proprietários</a>
+        <a class="navbar-item" href="/vendedores">Vendedores</a>
+        <a class="navbar-item" href="/imoveis">Imóveis</a>
+        <a class="navbar-item" href="/vendas">Vendas</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container has-text-centered">
+    <h1 class="title">
+      Lista de Imóveis
+    </h1>
+    <br>
+    <button class="button is-success" routerLink="/novoImovel">Novo Imóvel</button>
+    <br>
+    <br>
+  </div>
+</section>
+
+
+<div class="columns is-centered is-vcentered" *ngIf="hasImovel">
+  <div class="column is-narrow has-text-centered">
+
+    <div class="box has-text-centered">
+
+      <section class="section">
+        <div class="container has-text-centered">
+          <table class="table">
+            <tr style="text-align: center;">
+              <th>ID Imóvel</th>
+              <th>Tipo do Imóvel</th>
+              <th>ID do Proprietário</th>
+              <th>Data de Posse do Proprietário</th>
+              <th>UF</th>
+              <th>Cidade</th>
+              <th>CEP</th>
+            </tr>
+            <tr *ngFor="let imovel of imoveis">
+              <td>{{ imovel.id_imovel }}</td>
+              <td>{{ imovel.tipo_imovel }}</td>
+              <td>{{ imovel.id_proprietario }}</td>
+              <td>{{ imovel.data_posse_proprietario | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ imovel.uf }}</td>
+              <td>{{ imovel.cidade }}</td>
+              <td>{{ imovel.cep }}</td>
+              <button class="button is-warning mx-6" [routerLink]="['/imovel']"
+                      [queryParams]="{id:imovel.id_imovel}">
+                Alterar
+              </button>
+
+              <button class="button is-danger" [routerLink]="['/imoveis']"
+                      (click)="excluiImovel(imovel.id_imovel)"
+                      onClick="window.location.reload();">
+                Excluir
+              </button>
+            </tr>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+</body>
+
+
+</html>

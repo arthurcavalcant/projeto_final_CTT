@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+<body>
+
+<nav class="navbar is-light">
+  <div class="container">
+    <div class="navbar-brand"><a class="navbar-item" href="/clientes">Clientes</a>
+      <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/proprietarios">Proprietários</a>
+        <a class="navbar-item" href="/vendedores">Vendedores</a>
+        <a class="navbar-item" href="/imoveis">Imóveis</a>
+        <a class="navbar-item" href="/vendas">Vendas</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <h1 class="title">
+      Altera imóvel
+    </h1>
+    <br>
+    <br>
+    <br>
+  </div>
+</section>
+
+
+<div class="columns is-centered is-vcentered">
+  <div class="column is-narrow has-text-centered">
+
+    <div class="box has-text-centered">
+
+      <section class="section">
+        <div class="container">
+
+          <label class="label">ID do Proprietário: {{imovel.id_proprietario}}</label>
+          <label class="label">ID do Imóvel: {{imovel.id_imovel}}</label>
+          <label class="label">Tipo do Imóvel: {{imovel.tipo_imovel}}</label>
+          <label class="label">Rua do Imóvel: {{imovel.rua}}</label>
+          <label class="label">Número</label>
+          <input #numero class="input" type="text" id="numero" value="{{imovel.numero}}" name="numero"/> <br><br>
+          <label class="label">Andar do Imóvel: {{imovel.andar}}</label>
+          <label class="label">Bloco do Imóvel: {{imovel.bloco}}</label>
+          <label class="label">CEP do Imóvel: {{imovel.cep}}</label>
+          <label class="label">Cidade do imóvel: {{imovel.cidade}}</label>
+          <label class="label">UF do imóvel: {{imovel.uf}}</label>
+          <label class="label">Data de posse do proprietário: {{imovel.data_posse_proprietario}}</label>
+          <br>
+
+          <button class="button mx-6" routerLink="/imoveis" value="Voltar">Voltar</button>
+          <button routerLink="/imoveis" class="button is-success mx-6"
+                  (click)="atualizaImovel(numero.value, imovel.id_imovel)"
+                  value="Salvar">Salvar
+          </button>
+
+
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+</body>
+
+
+</html>
+

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+<body>
+
+<nav class="navbar is-light">
+  <div class="container">
+    <div class="navbar-brand"><a class="navbar-item" href="/clientes">Clientes</a>
+      <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/proprietarios">Proprietários</a>
+        <a class="navbar-item" href="/vendedores">Vendedores</a>
+        <a class="navbar-item" href="/imoveis">Imóveis</a>
+        <a class="navbar-item" href="/vendas">Vendas</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container has-text-centered">
+    <h1 class="title">
+      Lista de Vendedores
+    </h1>
+    <br>
+    <button class="button is-success" routerLink="/novoVendedor">Novo Vendedor</button>
+    <br>
+    <br>
+  </div>
+</section>
+
+
+<div class="columns is-centered is-vcentered" *ngIf="hasVendedor">
+  <div class="column is-narrow has-text-centered">
+
+    <div class="box has-text-centered">
+
+      <section class="section">
+        <div class="container has-text-centered">
+          <table class="table">
+            <tr style="text-align: center;">
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Data Nascimento</th>
+              <th>CPF</th>
+              <th>RG</th>
+              <th>Profissão</th>
+            </tr>
+            <tr *ngFor="let vendedor of vendedores">
+              <td>{{ vendedor.id_pessoa }}</td>
+
+              <td>{{ vendedor.nome }}</td>
+              <td>{{ vendedor.data_nascimento | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ vendedor.cpf }}</td>
+              <td>{{ vendedor.rg }}</td>
+              <td>{{ vendedor.profissao }}</td>
+              <button class="button is-warning mx-6" [routerLink]="['/vendedor']"
+                      [queryParams]="{id:vendedor.id_pessoa}">
+                Alterar
+              </button>
+
+              <button class="button is-danger" [routerLink]="['/vendedores']"
+                      (click)="excluiVendedor(vendedor.id_pessoa)"
+                      onClick="window.location.reload();">
+                Excluir
+              </button>
+            </tr>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+</body>
+
+
+</html>

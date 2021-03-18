@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+<body>
+
+<nav class="navbar is-light">
+  <div class="container">
+    <div class="navbar-brand"><a class="navbar-item" href="/clientes">Clientes</a>
+      <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/proprietarios">Proprietários</a>
+        <a class="navbar-item" href="/vendedores">Vendedores</a>
+        <a class="navbar-item" href="/imoveis">Imóveis</a>
+        <a class="navbar-item" href="/vendas">Vendas</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<section class="section is-center mx-6">
+  <article class="message is-warning is-centered is-medium is-half-widescreen">
+    <div class="message-header">
+      <p>Observações:</p>
+    </div>
+    <div class="message-body">
+      <p>Esta aplicação simula um Sistema Imobiliário, as funcionalidades aqui dispostas, até o momento, são:
+      Cadastro de clientes, proprietários, imóveis, vendedores e as vendas efetuadas. Algumas dessas entidades
+      permitem atualizar informações, após clicar no botão "Alterar", caso haja o botão na entidade, você verá os
+      campos disponíveis para alteração. No momento, a exclusão de uma entidade que tenha relação com outra acarretará
+      na exclusão em cascata, por exemplo: um imóvel que possui o proprietário de ID 2, caso esse proprietário seja excluído
+      o imóvel também será. O sistema atual permite que um mesmo CPF e RG seja um cliente, vendedor e proprietário ao mesmo tempo.
+      Dentre as features planejadas para implementação, ainda há questões relacionadas à regra de negócio, como o impedimento
+      de uma venda onde o cliente e o vendedor são a mesma pessoa, por exemplo.</p>
+    </div>
+  </article>
+</section>
+
+
+</body>

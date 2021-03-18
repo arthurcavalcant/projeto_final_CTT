@@ -20,6 +20,7 @@ import { VendedoresComponent } from './vendedores/vendedores.component';
 import { NovoVendedorComponent } from './novo-vendedor/novo-vendedor.component';
 import { VendasComponent } from './vendas/vendas.component';
 import { NovaVendaComponent } from './nova-venda/nova-venda.component';
+import { IndexComponent } from './index/index.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { NovaVendaComponent } from './nova-venda/nova-venda.component';
     NovoVendedorComponent,
     VendasComponent,
     NovaVendaComponent,
+    IndexComponent,
   ],
   imports: [
     BrowserModule,

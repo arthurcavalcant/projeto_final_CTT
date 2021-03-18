@@ -49,11 +49,6 @@ CREATE TABLE banco(
 	nome VARCHAR(255) NOT NULL
 );
 
-/*DROP SCHEMA public CASCADE;
-CREATE SCHEMA public;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO public;*/
-
 CREATE TYPE tipo_venda AS ENUM('à vista', 'financiamento');
 
 CREATE TABLE venda(

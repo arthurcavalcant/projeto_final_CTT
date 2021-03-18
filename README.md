@@ -22,7 +22,7 @@ A partir disso, será possível com o auxílio do Swagger entender as funcionali
 
 # Front-End
 
-A partir de uma url de sua escolha, como: http://localhost:4200/vendas, você poderá acessar a interface
-disponibilizada na web de forma mais amigável, embora nem todas as funcionalidades acessíveis pela API
-estejam em funcionamento, então vale a pena dar uma olhada no Swagger também! :D
+A partir de uma url de sua escolha, como: http://localhost:4200/vendas, ou até mesmo pelo index (http://localhost:4200/) 
+você poderá acessar a interface disponibilizada na web de forma mais amigável, embora nem todas as funcionalidades acessíveis
+pela API estejam em funcionamento, então vale a pena dar uma olhada no Swagger também! :D
 
